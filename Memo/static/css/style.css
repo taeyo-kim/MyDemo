@@ -142,3 +142,29 @@ footer {
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
 }
+
+/* 범주 배지 스타일 */
+.badge-daily {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.badge-work {
+    background-color: #dc3545;
+    color: white;
+}
+
+.badge-personal {
+    background-color: #28a745;
+    color: white;
+}
+
+/* 필터 버튼 스타일 */
+.btn-group .btn.active {
+    font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.btn-group {
+    flex-wrap: wrap;
+}

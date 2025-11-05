@@ -10,6 +10,25 @@
     </a>
 </div>
 
+<!-- 범주 필터 버튼 -->
+<div class="btn-group mb-3" role="group" aria-label="범주 필터">
+    <a href="{% url 'memo_list' %}" class="btn btn-outline-primary {% if current_category == 'all' %}active{% endif %}">
+        <i class="fas fa-th"></i> 전체
+    </a>
+    <a href="{% url 'memo_list' %}?category=daily" class="btn btn-outline-info {% if current_category == 'daily' %}active{% endif %}">
+        <i class="fas fa-sun"></i> 일상
+    </a>
+    <a href="{% url 'memo_list' %}?category=work" class="btn btn-outline-danger {% if current_category == 'work' %}active{% endif %}">
+        <i class="fas fa-briefcase"></i> 업무
+    </a>
+    <a href="{% url 'memo_list' %}?category=personal" class="btn btn-outline-success {% if current_category == 'personal' %}active{% endif %}">
+        <i class="fas fa-user"></i> 개인
+    </a>
+    <a href="{% url 'memo_list' %}?category=none" class="btn btn-outline-secondary {% if current_category == 'none' %}active{% endif %}">
+        <i class="fas fa-question"></i> 미분류
+    </a>
+</div>
+
 {% if memos %}
     <div class="row">
         {% for memo in memos %}
@@ -20,6 +39,13 @@
                         {{ memo.title }}
                         {% if memo.is_recently_created %}
                             <span class="badge badge-success">New</span>
+                        {% endif %}
+                        {% if memo.category %}
+                            <span class="badge badge-{{ memo.category }}">
+                                {{ memo.get_category_display }}
+                            </span>
+                        {% else %}
+                            <span class="badge badge-secondary">미분류</span>
                         {% endif %}
                     </h5>
                     <p class="card-text text-muted">
@@ -53,10 +79,10 @@
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
                 <li class="page-item">
-                    <a class="page-link" href="?page=1">처음</a>
+                    <a class="page-link" href="?page=1{% if current_category != 'all' %}&category={{ current_category }}{% endif %}">처음</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}">이전</a>
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if current_category != 'all' %}&category={{ current_category }}{% endif %}">이전</a>
                 </li>
             {% endif %}
 
@@ -67,17 +93,17 @@
                     </li>
                 {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
                     <li class="page-item">
-                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        <a class="page-link" href="?page={{ num }}{% if current_category != 'all' %}&category={{ current_category }}{% endif %}">{{ num }}</a>
                     </li>
                 {% endif %}
             {% endfor %}
 
             {% if page_obj.has_next %}
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.next_page_number }}">다음</a>
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if current_category != 'all' %}&category={{ current_category }}{% endif %}">다음</a>
                 </li>
                 <li class="page-item">
-                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">마지막</a>
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if current_category != 'all' %}&category={{ current_category }}{% endif %}">마지막</a>
                 </li>
             {% endif %}
         </ul>

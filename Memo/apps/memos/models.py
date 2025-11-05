@@ -5,6 +5,12 @@ from django.urls import reverse
 
 class Memo(models.Model):
     """메모 모델"""
+    CATEGORY_CHOICES = [
+        ('daily', '일상'),
+        ('work', '업무'),
+        ('personal', '개인'),
+    ]
+    
     title = models.CharField(
         max_length=200,
         verbose_name='제목',
@@ -19,6 +25,14 @@ class Memo(models.Model):
         on_delete=models.CASCADE,
         related_name='memos',
         verbose_name='작성자'
+    )
+    category = models.CharField(
+        max_length=20,
+        choices=CATEGORY_CHOICES,
+        blank=True,
+        null=True,
+        verbose_name='범주',
+        help_text='메모의 범주를 선택하세요'
     )
     created_at = models.DateTimeField(
         auto_now_add=True,
