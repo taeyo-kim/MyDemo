@@ -7,10 +7,11 @@ class MemoForm(forms.ModelForm):
     
     class Meta:
         model = Memo
-        fields = ['title', 'content']
+        fields = ['title', 'content', 'category']
         labels = {
             'title': '제목',
             'content': '내용',
+            'category': '범주',
         }
         widgets = {
             'title': forms.TextInput(attrs={
@@ -23,7 +24,14 @@ class MemoForm(forms.ModelForm):
                 'placeholder': '메모 내용을 입력하세요',
                 'rows': 10,
             }),
+            'category': forms.Select(attrs={
+                'class': 'form-control',
+            }),
         }
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['category'].required = False
 
     def clean_title(self):
         """제목 유효성 검사"""

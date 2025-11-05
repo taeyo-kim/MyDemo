@@ -21,6 +21,18 @@
                 <i class="fas fa-user"></i> 작성자: <strong>{{ memo.author.username }}</strong>
             </p>
             <p>
+                <i class="fas fa-tag"></i> 범주: 
+                {% if memo.category == "daily" %}
+                    <span class="badge badge-info">{{ memo.get_category_display }}</span>
+                {% elif memo.category == "work" %}
+                    <span class="badge badge-danger">{{ memo.get_category_display }}</span>
+                {% elif memo.category == "personal" %}
+                    <span class="badge badge-success">{{ memo.get_category_display }}</span>
+                {% else %}
+                    <span class="badge badge-secondary">미분류</span>
+                {% endif %}
+            </p>
+            <p>
                 <i class="far fa-calendar-alt"></i> 작성일: {{ memo.created_at|date:"Y년 m월 d일 H:i" }}
             </p>
             <p>
