@@ -40,8 +40,16 @@
                         {% if memo.is_recently_created %}
                             <span class="badge badge-success">New</span>
                         {% endif %}
-                        {% if memo.category %}
-                            <span class="badge badge-{{ memo.category }}">
+                        {% if memo.category == "daily" %}
+                            <span class="badge badge-info">
+                                {{ memo.get_category_display }}
+                            </span>
+                        {% elif memo.category == "work" %}
+                            <span class="badge badge-danger">
+                                {{ memo.get_category_display }}
+                            </span>
+                        {% elif memo.category == "personal" %}
+                            <span class="badge badge-success">
                                 {{ memo.get_category_display }}
                             </span>
                         {% else %}

@@ -22,8 +22,12 @@
             </p>
             <p>
                 <i class="fas fa-tag"></i> 범주: 
-                {% if memo.category %}
-                    <span class="badge badge-{{ memo.category }}">{{ memo.get_category_display }}</span>
+                {% if memo.category == "daily" %}
+                    <span class="badge badge-info">{{ memo.get_category_display }}</span>
+                {% elif memo.category == "work" %}
+                    <span class="badge badge-danger">{{ memo.get_category_display }}</span>
+                {% elif memo.category == "personal" %}
+                    <span class="badge badge-success">{{ memo.get_category_display }}</span>
                 {% else %}
                     <span class="badge badge-secondary">미분류</span>
                 {% endif %}

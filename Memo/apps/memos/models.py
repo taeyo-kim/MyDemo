@@ -30,7 +30,7 @@ class Memo(models.Model):
         max_length=20,
         choices=CATEGORY_CHOICES,
         blank=True,
-        null=True,
+        default='',
         verbose_name='범주',
         help_text='메모의 범주를 선택하세요'
     )
