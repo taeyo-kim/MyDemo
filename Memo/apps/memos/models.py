@@ -6,9 +6,8 @@ from django.urls import reverse
 class Memo(models.Model):
     """메모 모델"""
     CATEGORY_CHOICES = [
-        ('daily', '일상'),
-        ('work', '업무'),
-        ('personal', '개인'),
+        ('private', '개인'),
+        ('public', '공개'),
     ]
     
     title = models.CharField(
@@ -30,9 +29,9 @@ class Memo(models.Model):
         max_length=20,
         choices=CATEGORY_CHOICES,
         blank=True,
-        default='',
+        null=True,
         verbose_name='범주',
-        help_text='메모의 범주를 선택하세요'
+        help_text='메모의 공개 범위를 선택하세요'
     )
     created_at = models.DateTimeField(
         auto_now_add=True,
