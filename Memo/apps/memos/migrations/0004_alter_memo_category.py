@@ -19,10 +19,10 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(migrate_categories, reverse_code=migrations.RunPython.noop),
         migrations.AlterField(
             model_name='memo',
             name='category',
             field=models.CharField(blank=True, choices=[('private', '개인'), ('public', '공개')], help_text='메모의 공개 범위를 선택하세요', max_length=20, null=True, verbose_name='범주'),
         ),
-        migrations.RunPython(migrate_categories, reverse_code=migrations.RunPython.noop),
     ]
