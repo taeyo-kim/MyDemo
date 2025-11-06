@@ -25,9 +25,10 @@ class MemoListView(LoginRequiredMixin, ListView):
         # 범주 필터링
         category = self.request.GET.get('category')
         if category:
+            valid_categories = [choice[0] for choice in Memo.CATEGORY_CHOICES]
             if category == 'none':  # 미분류
                 queryset = queryset.filter(category__isnull=True)
-            elif category in ['private', 'public']:  # 변경된 범주
+            elif category in valid_categories:
                 queryset = queryset.filter(category=category)
         
         return queryset

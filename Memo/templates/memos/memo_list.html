@@ -15,7 +15,7 @@
     <a href="{% url 'memo_list' %}" class="btn btn-outline-primary {% if current_category == 'all' %}active{% endif %}">
         <i class="fas fa-th"></i> 전체
     </a>
-    <a href="{% url 'memo_list' %}?category=private" class="btn btn-outline-secondary {% if current_category == 'private' %}active{% endif %}">
+    <a href="{% url 'memo_list' %}?category=private" class="btn btn-outline-dark {% if current_category == 'private' %}active{% endif %}">
         <i class="fas fa-lock"></i> 개인
     </a>
     <a href="{% url 'memo_list' %}?category=public" class="btn btn-outline-success {% if current_category == 'public' %}active{% endif %}">
