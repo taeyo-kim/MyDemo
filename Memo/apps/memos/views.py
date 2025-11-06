@@ -19,8 +19,24 @@ class MemoListView(LoginRequiredMixin, ListView):
     paginate_by = 10
 
     def get_queryset(self):
-        """현재 사용자의 메모만 조회"""
-        return Memo.objects.filter(author=self.request.user).select_related('author')
+        """현재 사용자의 메모만 조회 + 범주 필터링"""
+        queryset = Memo.objects.filter(author=self.request.user).select_related('author')
+        
+        # 범주 필터링
+        category = self.request.GET.get('category')
+        if category:
+            valid_categories = [choice[0] for choice in Memo.CATEGORY_CHOICES]
+            if category == 'none':  # 미분류
+                queryset = queryset.filter(category__isnull=True)
+            elif category in valid_categories:
+                queryset = queryset.filter(category=category)
+        
+        return queryset
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['current_category'] = self.request.GET.get('category', 'all')
+        return context
 
 
 class MemoDetailView(LoginRequiredMixin, UserPassesTestMixin, DetailView):
