@@ -15,14 +15,11 @@
     <a href="{% url 'memo_list' %}" class="btn btn-outline-primary {% if current_category == 'all' %}active{% endif %}">
         <i class="fas fa-th"></i> 전체
     </a>
-    <a href="{% url 'memo_list' %}?category=daily" class="btn btn-outline-info {% if current_category == 'daily' %}active{% endif %}">
-        <i class="fas fa-sun"></i> 일상
+    <a href="{% url 'memo_list' %}?category=private" class="btn btn-outline-dark {% if current_category == 'private' %}active{% endif %}">
+        <i class="fas fa-lock"></i> 개인
     </a>
-    <a href="{% url 'memo_list' %}?category=work" class="btn btn-outline-danger {% if current_category == 'work' %}active{% endif %}">
-        <i class="fas fa-briefcase"></i> 업무
-    </a>
-    <a href="{% url 'memo_list' %}?category=personal" class="btn btn-outline-success {% if current_category == 'personal' %}active{% endif %}">
-        <i class="fas fa-user"></i> 개인
+    <a href="{% url 'memo_list' %}?category=public" class="btn btn-outline-success {% if current_category == 'public' %}active{% endif %}">
+        <i class="fas fa-globe"></i> 공개
     </a>
     <a href="{% url 'memo_list' %}?category=none" class="btn btn-outline-secondary {% if current_category == 'none' %}active{% endif %}">
         <i class="fas fa-question"></i> 미분류
@@ -40,18 +37,22 @@
                         {% if memo.is_recently_created %}
                             <span class="badge badge-success">New</span>
                         {% endif %}
-                        {% if memo.category == "daily" %}
-                            <span class="badge badge-info">
-                                {{ memo.get_category_display }}
-                            </span>
-                        {% elif memo.category == "work" %}
-                            <span class="badge badge-danger">
-                                {{ memo.get_category_display }}
-                            </span>
-                        {% elif memo.category == "personal" %}
-                            <span class="badge badge-success">
-                                {{ memo.get_category_display }}
-                            </span>
+                        {% if memo.category %}
+                            {% if memo.category == 'private' %}
+                                <span class="badge badge-private">
+                                    <i class="fas fa-lock"></i>
+                                    {{ memo.get_category_display }}
+                                </span>
+                            {% elif memo.category == 'public' %}
+                                <span class="badge badge-public">
+                                    <i class="fas fa-globe"></i>
+                                    {{ memo.get_category_display }}
+                                </span>
+                            {% else %}
+                                <span class="badge badge-secondary">
+                                    {{ memo.get_category_display }}
+                                </span>
+                            {% endif %}
                         {% else %}
                             <span class="badge badge-secondary">미분류</span>
                         {% endif %}

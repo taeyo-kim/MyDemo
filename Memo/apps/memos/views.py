@@ -27,12 +27,9 @@ class MemoListView(LoginRequiredMixin, ListView):
         if category:
             valid_categories = [choice[0] for choice in Memo.CATEGORY_CHOICES]
             if category == 'none':  # 미분류
-                queryset = queryset.filter(category='')
+                queryset = queryset.filter(category__isnull=True)
             elif category in valid_categories:
                 queryset = queryset.filter(category=category)
-            else:
-                # 잘못된 카테고리 값: 빈 쿼리셋 반환
-                return queryset.none()
         
         return queryset
     

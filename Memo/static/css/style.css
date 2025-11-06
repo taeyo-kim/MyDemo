@@ -144,18 +144,13 @@ footer {
 }
 
 /* 범주 배지 스타일 */
-.badge-daily {
-    background-color: #17a2b8;
+.badge-private {
+    background-color: #6c757d;  /* 회색 - 개인 */
     color: white;
 }
 
-.badge-work {
-    background-color: #dc3545;
-    color: white;
-}
-
-.badge-personal {
-    background-color: #28a745;
+.badge-public {
+    background-color: #28a745;  /* 초록 - 공개 */
     color: white;
 }
 
