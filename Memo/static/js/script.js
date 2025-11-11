@@ -16,11 +16,85 @@ $(document).ready(function() {
         }
     });
     
-    // 폼 제출 시 로딩 표시
-    $('form').on('submit', function() {
-        const submitBtn = $(this).find('button[type="submit"]');
+    // 폼 유효성 검사 강화
+    $('form').on('submit', function(e) {
+        const form = $(this);
+        const submitBtn = form.find('button[type="submit"]');
+        
+        // 필수 입력 필드 검사
+        let isValid = true;
+        form.find('input[required], textarea[required]').each(function() {
+            const field = $(this);
+            const value = field.val().trim();
+            
+            if (!value) {
+                isValid = false;
+                field.addClass('is-invalid');
+                
+                // 에러 메시지 추가
+                if (!field.next('.invalid-feedback').length) {
+                    field.after('<div class="invalid-feedback">이 필드는 필수 입력 항목입니다.</div>');
+                }
+            } else {
+                field.removeClass('is-invalid');
+                field.next('.invalid-feedback').remove();
+            }
+        });
+        
+        // 이메일 형식 검사
+        form.find('input[type="email"]').each(function() {
+            const field = $(this);
+            const value = field.val().trim();
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            
+            if (value && !emailPattern.test(value)) {
+                isValid = false;
+                field.addClass('is-invalid');
+                
+                if (!field.next('.invalid-feedback').length) {
+                    field.after('<div class="invalid-feedback">올바른 이메일 주소를 입력해주세요.</div>');
+                }
+            }
+        });
+        
+        // 비밀번호 확인 검사 (회원가입)
+        const password1 = form.find('input[name="password1"]');
+        const password2 = form.find('input[name="password2"]');
+        
+        if (password1.length && password2.length) {
+            if (password1.val() !== password2.val()) {
+                isValid = false;
+                password2.addClass('is-invalid');
+                
+                if (!password2.next('.invalid-feedback').length) {
+                    password2.after('<div class="invalid-feedback">비밀번호가 일치하지 않습니다.</div>');
+                }
+            }
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+            // 첫 번째 에러 필드로 스크롤
+            const firstError = form.find('.is-invalid').first();
+            if (firstError.length) {
+                $('html, body').animate({
+                    scrollTop: firstError.offset().top - 100
+                }, 300);
+            }
+            return false;
+        }
+        
+        // 유효성 검사 통과 시 로딩 표시
         submitBtn.prop('disabled', true);
+        const originalText = submitBtn.html();
+        submitBtn.data('original-text', originalText);
         submitBtn.html('<span class="spinner-border spinner-border-sm"></span> 처리 중...');
+    });
+    
+    // 입력 시 에러 메시지 제거
+    $('input, textarea').on('input', function() {
+        $(this).removeClass('is-invalid');
+        $(this).next('.invalid-feedback').remove();
     });
     
     // 카드 호버 효과 강화
@@ -77,4 +151,37 @@ $(document).ready(function() {
 window.addEventListener('load', function() {
     // 페이드인 효과
     $('main').css('opacity', 0).animate({opacity: 1}, 500);
+    
+    // 로딩 오버레이 제거
+    $('.loading-overlay').removeClass('active');
+});
+
+// 긴 작업 시 로딩 오버레이 표시
+function showLoadingOverlay(message = '처리 중...') {
+    if (!$('.loading-overlay').length) {
+        $('body').append(`
+            <div class="loading-overlay">
+                <div class="text-center text-white">
+                    <div class="spinner-border" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="sr-only">Loading...</span>
+                    </div>
+                    <p class="mt-3">${message}</p>
+                </div>
+            </div>
+        `);
+    }
+    $('.loading-overlay').addClass('active');
+}
+
+function hideLoadingOverlay() {
+    $('.loading-overlay').removeClass('active');
+}
+
+// 키보드 네비게이션 개선
+$(document).on('keydown', function(e) {
+    // ESC 키로 모달 닫기
+    if (e.key === 'Escape') {
+        $('.modal').modal('hide');
+        $('.alert').fadeOut();
+    }
 });
