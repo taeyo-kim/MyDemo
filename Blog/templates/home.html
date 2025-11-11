@@ -9,8 +9,8 @@
     <hr class="my-4">
     {% if user.is_authenticated %}
         <p>안녕하세요, {{ user.username }}님!</p>
-        <a class="btn btn-primary btn-lg" href="#" role="button">포스트 목록 보기</a>
-        <a class="btn btn-success btn-lg" href="#" role="button">새 포스트 작성</a>
+        <a class="btn btn-primary btn-lg" href="{% url 'post-list' %}" role="button">포스트 목록 보기</a>
+        <a class="btn btn-success btn-lg" href="{% url 'post-create' %}" role="button">새 포스트 작성</a>
     {% else %}
         <p>로그인하여 블로그를 시작하세요.</p>
         <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">로그인</a>

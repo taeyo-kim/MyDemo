@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ post.title }} - 블로그{% endblock %}
+
+{% block content %}
+<article>
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h1 class="mb-0">{{ post.title }}</h1>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <small class="text-muted">
+                    작성자: <strong>{{ post.author.username }}</strong> | 
+                    작성일: {{ post.created_at|date:"Y년 m월 d일 H:i" }}
+                    {% if post.created_at != post.updated_at %}
+                        | 수정일: {{ post.updated_at|date:"Y년 m월 d일 H:i" }}
+                    {% endif %}
+                </small>
+            </div>
+            
+            <hr>
+            
+            <div class="post-content">
+                {{ post.content|linebreaks }}
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'post-list' %}" class="btn btn-secondary">목록으로</a>
+                
+                {% if user.is_authenticated and user == post.author %}
+                    <div>
+                        <a href="{% url 'post-update' post.pk %}" class="btn btn-warning">수정</a>
+                        <a href="{% url 'post-delete' post.pk %}" class="btn btn-danger">삭제</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</article>
+{% endblock %}

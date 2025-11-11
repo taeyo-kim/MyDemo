@@ -21,12 +21,12 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{% url 'home' %}">홈</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'post-list' %}">포스트 목록</a>
+                    </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="#">포스트 목록</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="#">새 포스트</a>
+                            <a class="nav-link" href="{% url 'post-create' %}">새 포스트</a>
                         </li>
                         <li class="nav-item">
                             <span class="nav-link">{{ user.username }}님</span>
