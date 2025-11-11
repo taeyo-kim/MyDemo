@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+
+{% block title %}로그인 - 블로그{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow">
+            <div class="card-header text-white" style="background: linear-gradient(135deg, #28a745, #1e7e34);">
+                <h3 class="mb-0">🔐 로그인</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+                    
+                    <div class="mb-3">
+                        {{ form.username.label_tag }}
+                        {{ form.username }}
+                        {% if form.username.errors %}
+                            <div class="text-danger">{{ form.username.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        {{ form.password.label_tag }}
+                        {{ form.password }}
+                        {% if form.password.errors %}
+                            <div class="text-danger">{{ form.password.errors }}</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success btn-lg">✅ 로그인</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center">
+                계정이 없으신가요? <a href="{% url 'register' %}" class="text-primary fw-bold">회원가입</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
