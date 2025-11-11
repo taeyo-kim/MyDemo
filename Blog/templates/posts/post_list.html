@@ -4,10 +4,10 @@
 
 {% block content %}
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <h1>포스트 목록</h1>
+    <h1 class="text-primary">📝 포스트 목록</h1>
     {% if user.is_authenticated %}
-        <a href="{% url 'post-create' %}" class="btn btn-primary">
-            <i class="bi bi-plus-circle"></i> 새 포스트 작성
+        <a href="{% url 'post-create' %}" class="btn btn-success btn-lg">
+            <i class="bi bi-plus-circle"></i> ✍️ 새 포스트 작성
         </a>
     {% endif %}
 </div>
@@ -16,7 +16,7 @@
     <div class="row">
         {% for post in posts %}
             <div class="col-md-12 mb-4">
-                <div class="card">
+                <div class="card shadow-sm">
                     <div class="card-body">
                         <h3 class="card-title">
                             <a href="{% url 'post-detail' post.pk %}" class="text-decoration-none">
@@ -28,11 +28,11 @@
                         </p>
                         <div class="d-flex justify-content-between align-items-center">
                             <small class="text-muted">
-                                작성자: <strong>{{ post.author.username }}</strong> | 
-                                {{ post.created_at|date:"Y년 m월 d일" }}
+                                👤 작성자: <strong class="text-success">{{ post.author.username }}</strong> | 
+                                📅 {{ post.created_at|date:"Y년 m월 d일" }}
                             </small>
                             <a href="{% url 'post-detail' post.pk %}" class="btn btn-sm btn-outline-primary">
-                                자세히 보기
+                                자세히 보기 →
                             </a>
                         </div>
                     </div>
@@ -72,14 +72,14 @@
         </nav>
     {% endif %}
 {% else %}
-    <div class="alert alert-info text-center">
-        <h4>아직 포스트가 없습니다.</h4>
+    <div class="alert alert-info text-center shadow-sm">
+        <h4 class="text-primary">📭 아직 포스트가 없습니다.</h4>
         {% if user.is_authenticated %}
             <p>첫 번째 포스트를 작성해보세요!</p>
-            <a href="{% url 'post-create' %}" class="btn btn-primary">포스트 작성하기</a>
+            <a href="{% url 'post-create' %}" class="btn btn-success btn-lg">✍️ 포스트 작성하기</a>
         {% else %}
             <p>로그인하여 포스트를 작성해보세요.</p>
-            <a href="{% url 'login' %}" class="btn btn-primary">로그인</a>
+            <a href="{% url 'login' %}" class="btn btn-primary btn-lg">🔐 로그인</a>
         {% endif %}
     </div>
 {% endif %}

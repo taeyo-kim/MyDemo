@@ -7,13 +7,13 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <div class="card">
-            <div class="card-header bg-primary text-white">
+        <div class="card shadow">
+            <div class="card-header text-white" style="background: linear-gradient(135deg, #28a745, #1e7e34);">
                 <h3 class="mb-0">
                     {% if form.instance.pk %}
-                        포스트 수정
+                        ✏️ 포스트 수정
                     {% else %}
-                        새 포스트 작성
+                        ✍️ 새 포스트 작성
                     {% endif %}
                 </h3>
             </div>
@@ -44,9 +44,9 @@
                     </div>
                     
                     <div class="d-flex justify-content-between">
-                        <a href="{% url 'post-list' %}" class="btn btn-secondary">취소</a>
-                        <button type="submit" class="btn btn-primary">
-                            {% if form.instance.pk %}수정{% else %}작성{% endif %}
+                        <a href="{% url 'post-list' %}" class="btn btn-secondary">❌ 취소</a>
+                        <button type="submit" class="btn btn-success btn-lg">
+                            {% if form.instance.pk %}💾 수정 완료{% else %}📝 작성 완료{% endif %}
                         </button>
                     </div>
                 </form>
