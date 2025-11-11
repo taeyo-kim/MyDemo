@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}홈 - 블로그{% endblock %}
+
+{% block content %}
+<div class="jumbotron text-center bg-light p-5 rounded">
+    <h1 class="display-4">Django 블로그에 오신 것을 환영합니다!</h1>
+    <p class="lead">간단하고 강력한 블로그 플랫폼입니다.</p>
+    <hr class="my-4">
+    {% if user.is_authenticated %}
+        <p>안녕하세요, {{ user.username }}님!</p>
+        <a class="btn btn-primary btn-lg" href="#" role="button">포스트 목록 보기</a>
+        <a class="btn btn-success btn-lg" href="#" role="button">새 포스트 작성</a>
+    {% else %}
+        <p>로그인하여 블로그를 시작하세요.</p>
+        <a class="btn btn-primary btn-lg" href="{% url 'login' %}" role="button">로그인</a>
+        <a class="btn btn-success btn-lg" href="{% url 'register' %}" role="button">회원가입</a>
+    {% endif %}
+</div>
+
+<div class="row mt-5">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">✍️ 글쓰기</h5>
+                <p class="card-text">자유롭게 생각을 표현하고 공유하세요.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">📚 포스트 관리</h5>
+                <p class="card-text">포스트를 쉽게 생성, 수정, 삭제할 수 있습니다.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">🔐 안전한 인증</h5>
+                <p class="card-text">Django의 강력한 인증 시스템을 사용합니다.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
