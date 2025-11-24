@@ -7,7 +7,7 @@ class PostForm(forms.ModelForm):
     
     class Meta:
         model = Post
-        fields = ['title', 'content']
+        fields = ['title', 'content', 'visibility']
         widgets = {
             'title': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -18,8 +18,12 @@ class PostForm(forms.ModelForm):
                 'placeholder': '포스트 내용을 입력하세요',
                 'rows': 10
             }),
+            'visibility': forms.RadioSelect(attrs={
+                'class': 'form-check-input'
+            }),
         }
         labels = {
             'title': '제목',
             'content': '내용',
+            'visibility': '공개 범주',
         }

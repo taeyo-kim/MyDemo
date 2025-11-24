@@ -17,6 +17,13 @@
                         | ✏️ 수정일: <span class="text-warning">{{ post.updated_at|date:"Y년 m월 d일 H:i" }}</span>
                     {% endif %}
                 </small>
+                <div class="mt-2">
+                    {% if post.visibility == 'public' %}
+                        <span class="badge bg-success">🌍 공개</span>
+                    {% else %}
+                        <span class="badge bg-secondary">🔒 비공개</span>
+                    {% endif %}
+                </div>
             </div>
             
             <hr>

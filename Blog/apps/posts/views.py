@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+from django.db.models import Q
 from .models import Post
 from .forms import PostForm
 
@@ -15,6 +16,21 @@ class PostListView(ListView):
     context_object_name = 'posts'
     paginate_by = 10
     ordering = ['-created_at']
+    
+    def get_queryset(self):
+        """비로그인 사용자: 공개 글만, 로그인 사용자: 공개 글 + 본인 비공개 글"""
+        queryset = super().get_queryset()
+        
+        if self.request.user.is_authenticated:
+            # 로그인 사용자: 공개 글 또는 본인의 비공개 글
+            queryset = queryset.filter(
+                Q(visibility='public') | Q(author=self.request.user)
+            )
+        else:
+            # 비로그인 사용자: 공개 글만
+            queryset = queryset.filter(visibility='public')
+        
+        return queryset
 
 
 class PostDetailView(DetailView):
@@ -22,6 +38,21 @@ class PostDetailView(DetailView):
     model = Post
     template_name = 'posts/post_detail.html'
     context_object_name = 'post'
+    
+    def get_queryset(self):
+        """비공개 글은 작성자만 접근 가능"""
+        queryset = super().get_queryset()
+        
+        if self.request.user.is_authenticated:
+            # 로그인 사용자: 공개 글 또는 본인의 비공개 글
+            queryset = queryset.filter(
+                Q(visibility='public') | Q(author=self.request.user)
+            )
+        else:
+            # 비로그인 사용자: 공개 글만
+            queryset = queryset.filter(visibility='public')
+        
+        return queryset
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
