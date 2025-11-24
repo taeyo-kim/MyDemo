@@ -50,7 +50,7 @@
                                 <div class="form-check">
                                     {{ radio.tag }}
                                     <label class="form-check-label" for="{{ radio.id_for_label }}">
-                                        {% if radio.choice_label == '공개' %}
+                                        {% if radio.choice_value == 'public' %}
                                             🌍 {{ radio.choice_label }}
                                         {% else %}
                                             🔒 {{ radio.choice_label }}
