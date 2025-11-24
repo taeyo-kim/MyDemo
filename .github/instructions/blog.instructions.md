@@ -67,11 +67,11 @@ Django 기반의 블로그 웹 애플리케이션. 제목, 메뉴, 본문 등 �
   - templates/                # Django 템플릿
     - base.html               # 기본 템플릿
     - home.html               # 홈페이지 템플릿
-    - memos/                  # 메모 관련 템플릿
-      - memo_confirm_delete.html
-      - memo_detail.html
-      - memo_form.html
-      - memo_list.html
+    - posts/                  # 포스트 관련 템플릿
+      - post_confirm_delete.html
+      - post_detail.html
+      - post_form.html
+      - post_list.html
     - users/                  # 사용자 관련 템플릿
       - login.html
       - register.html
