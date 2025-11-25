@@ -3,65 +3,74 @@
 {% block title %}회원가입 - 블로그{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-6">
-        <div class="card shadow">
-            <div class="card-header text-white" style="background: linear-gradient(135deg, #0d6efd, #0a58ca);">
-                <h3 class="mb-0">👤 회원가입</h3>
-            </div>
-            <div class="card-body">
-                <form method="post">
-                    {% csrf_token %}
-                    
-                    {% if form.non_field_errors %}
-                        <div class="alert alert-danger">
-                            {{ form.non_field_errors }}
-                        </div>
+<div class="px-4 py-6 sm:px-0">
+    <div class="max-w-md mx-auto">
+        <div class="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
+            <h2 class="text-center text-3xl font-extrabold text-gray-900 mb-6">
+                회원가입
+            </h2>
+
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                
+                <div>
+                    <label for="id_username" class="block text-sm font-medium text-gray-700">
+                        사용자 이름
+                    </label>
+                    <div class="mt-1">
+                        <input type="text" name="username" id="id_username" required 
+                               class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                    </div>
+                    {% if form.username.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.username.errors.0 }}</p>
+                    {% else %}
+                        <p class="mt-2 text-xs text-gray-500">150자 이하 문자, 숫자 그리고 @/./+/-/_ 만 가능합니다.</p>
                     {% endif %}
-                    
-                    <div class="mb-3">
-                        {{ form.username.label_tag }}
-                        {{ form.username }}
-                        {% if form.username.errors %}
-                            <div class="text-danger">{{ form.username.errors }}</div>
-                        {% endif %}
+                </div>
+
+                <div>
+                    <label for="id_password1" class="block text-sm font-medium text-gray-700">
+                        비밀번호
+                    </label>
+                    <div class="mt-1">
+                        <input type="password" name="password1" id="id_password1" required 
+                               class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                     </div>
-                    
-                    <div class="mb-3">
-                        {{ form.email.label_tag }}
-                        {{ form.email }}
-                        {% if form.email.errors %}
-                            <div class="text-danger">{{ form.email.errors }}</div>
-                        {% endif %}
+                    {% if form.password1.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.password1.errors.0 }}</p>
+                    {% else %}
+                        <p class="mt-2 text-xs text-gray-500">최소 8자 이상, 숫자만으로는 구성할 수 없습니다.</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <label for="id_password2" class="block text-sm font-medium text-gray-700">
+                        비밀번호 확인
+                    </label>
+                    <div class="mt-1">
+                        <input type="password" name="password2" id="id_password2" required 
+                               class="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                     </div>
-                    
-                    <div class="mb-3">
-                        {{ form.password1.label_tag }}
-                        {{ form.password1 }}
-                        {% if form.password1.errors %}
-                            <div class="text-danger">{{ form.password1.errors }}</div>
-                        {% endif %}
-                        <small class="form-text text-muted">
-                            비밀번호는 최소 8자 이상이어야 하며, 숫자만으로 구성될 수 없습니다.
-                        </small>
-                    </div>
-                    
-                    <div class="mb-3">
-                        {{ form.password2.label_tag }}
-                        {{ form.password2 }}
-                        {% if form.password2.errors %}
-                            <div class="text-danger">{{ form.password2.errors }}</div>
-                        {% endif %}
-                    </div>
-                    
-                    <div class="d-grid">
-                        <button type="submit" class="btn btn-primary btn-lg">🚀 회원가입</button>
-                    </div>
-                </form>
-            </div>
-            <div class="card-footer text-center">
-                이미 계정이 있으신가요? <a href="{% url 'login' %}" class="text-success fw-bold">로그인</a>
-            </div>
+                    {% if form.password2.errors %}
+                        <p class="mt-2 text-sm text-red-600">{{ form.password2.errors.0 }}</p>
+                    {% else %}
+                        <p class="mt-2 text-xs text-gray-500">확인을 위해 이전과 동일한 비밀번호를 입력하세요.</p>
+                    {% endif %}
+                </div>
+
+                <div>
+                    <button type="submit" 
+                            class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        회원가입
+                    </button>
+                </div>
+
+                <div class="text-sm text-center">
+                    <a href="{% url 'users:login' %}" class="font-medium text-indigo-600 hover:text-indigo-500">
+                        이미 계정이 있으신가요? 로그인
+                    </a>
+                </div>
+            </form>
         </div>
     </div>
 </div>
