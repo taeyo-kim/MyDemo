@@ -1,25 +1,24 @@
 # Python
+__pycache__/
 *.py[cod]
 *$py.class
 *.so
-__pycache__/
-*.egg
-*.egg-info/
-dist/
-build/
-
-# Django
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-/media
-/staticfiles
+.Python
 
 # Virtual Environment
 venv/
 env/
 ENV/
+.venv
+
+# Django
+db/
+*.sqlite3
+*.log
+local_settings.py
+
+# Environment Variables
+.env
 
 # IDE
 .vscode/
@@ -28,10 +27,10 @@ ENV/
 *.swo
 *~
 
-# Environment variables
-.env
-.env.local
-
 # OS
 .DS_Store
 Thumbs.db
+
+# Static files
+staticfiles/
+media/
