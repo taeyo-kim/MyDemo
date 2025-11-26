@@ -33,6 +33,65 @@
         </div>
     </div>
 
+    <!-- 댓글 섹션 -->
+    <div class="mt-8 bg-white shadow overflow-hidden sm:rounded-lg">
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+            <h2 class="text-xl font-bold text-gray-900">댓글 ({{ comments|length }})</h2>
+        </div>
+
+        <!-- 댓글 목록 -->
+        <div class="divide-y divide-gray-200">
+            {% for comment in comments %}
+            <div class="px-4 py-4 sm:px-6">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <p class="text-sm font-medium text-gray-900">{{ comment.author.username }}</p>
+                        <p class="text-xs text-gray-500">
+                            {{ comment.created_at|date:"Y년 m월 d일 H:i" }}
+                            {% if comment.created_at != comment.updated_at %}
+                            (수정됨)
+                            {% endif %}
+                        </p>
+                        <p class="mt-2 text-gray-700">{{ comment.content|linebreaks }}</p>
+                    </div>
+                    {% if user == comment.author %}
+                    <div class="ml-4 flex-shrink-0 space-x-2">
+                        <a href="{% url 'blog:comment_update' comment.pk %}" class="text-sm text-indigo-600 hover:text-indigo-900">수정</a>
+                        <a href="{% url 'blog:comment_delete' comment.pk %}" class="text-sm text-red-600 hover:text-red-900">삭제</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% empty %}
+            <div class="px-4 py-6 sm:px-6 text-center text-gray-500">
+                아직 댓글이 없습니다. 첫 댓글을 남겨보세요!
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- 댓글 작성 폼 -->
+        {% if user.is_authenticated %}
+        <div class="px-4 py-5 sm:px-6 border-t border-gray-200">
+            <form method="post" action="{% url 'blog:comment_create' post.pk %}">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="id_content" class="block text-sm font-medium text-gray-700 mb-2">댓글 작성</label>
+                    {{ comment_form.content }}
+                </div>
+                <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    댓글 등록
+                </button>
+            </form>
+        </div>
+        {% else %}
+        <div class="px-4 py-5 sm:px-6 border-t border-gray-200 text-center">
+            <p class="text-gray-500">
+                댓글을 작성하려면 <a href="{% url 'users:login' %}?next={{ request.path }}" class="text-indigo-600 hover:text-indigo-900">로그인</a>해주세요.
+            </p>
+        </div>
+        {% endif %}
+    </div>
+
     <div class="mt-6">
         <a href="{% url 'blog:list' %}" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
             ← 목록으로
