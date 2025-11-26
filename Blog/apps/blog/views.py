@@ -92,6 +92,9 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
         comment = self.get_object()
         return self.request.user == comment.author
 
+    def get_success_url(self) -> str:
+        return reverse('blog:detail', kwargs={'pk': self.object.post.pk})
+
 
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     """댓글 삭제 뷰 (로그인 + 작성자 확인)"""
