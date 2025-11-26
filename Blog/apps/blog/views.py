@@ -16,11 +16,13 @@ class PostListView(ListView):
 
     def get_queryset(self):
         """
-        공개 글과 본인의 비공개 글만 반환합니다.
+        공개 글과 본인이 작성한 모든 글을 반환합니다.
+        - 비로그인 사용자: 공개 글만 표시
+        - 로그인 사용자: 공개 글 + 본인이 작성한 모든 글(공개/비공개)
         """
         queryset = super().get_queryset()
         if self.request.user.is_authenticated:
-            # 공개 글 또는 본인이 작성한 비공개 글만 표시
+            # 공개 글 또는 본인이 작성한 글(공개/비공개 모두) 표시
             return queryset.filter(
                 Q(visibility=Post.Visibility.PUBLIC) |
                 Q(author=self.request.user)
