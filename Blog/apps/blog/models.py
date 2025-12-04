@@ -5,6 +5,11 @@ from django.urls import reverse
 
 class Post(models.Model):
     """블로그 게시글 모델"""
+    VISIBILITY_CHOICES = [
+        ('private', '비공개'),
+        ('public', '공개'),
+    ]
+    
     title = models.CharField(max_length=200, verbose_name='제목')
     content = models.TextField(verbose_name='내용')
     author = models.ForeignKey(
@@ -12,6 +17,12 @@ class Post(models.Model):
         on_delete=models.CASCADE,
         verbose_name='작성자',
         related_name='posts'
+    )
+    visibility = models.CharField(
+        max_length=10,
+        choices=VISIBILITY_CHOICES,
+        default='public',
+        verbose_name='공개 범주'
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='작성일')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='수정일')
