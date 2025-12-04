@@ -6,13 +6,8 @@ from django.db.models import Q
 from .models import Post
 
 
-class PostListView(ListView):
-    """블로그 글 목록 뷰"""
-    model = Post
-    template_name = 'blog/blog_list.html'
-    context_object_name = 'posts'
-    paginate_by = 10
-    
+class VisibilityFilterMixin:
+    """비공개 글 필터링을 위한 Mixin 클래스"""
     def get_queryset(self):
         """비공개 글 필터링: 공개 글 + 본인의 비공개 글만 표시"""
         queryset = super().get_queryset()
@@ -26,23 +21,19 @@ class PostListView(ListView):
             return queryset.filter(visibility='public')
 
 
-class PostDetailView(DetailView):
+class PostListView(VisibilityFilterMixin, ListView):
+    """블로그 글 목록 뷰"""
+    model = Post
+    template_name = 'blog/blog_list.html'
+    context_object_name = 'posts'
+    paginate_by = 10
+
+
+class PostDetailView(VisibilityFilterMixin, DetailView):
     """블로그 글 상세 뷰"""
     model = Post
     template_name = 'blog/blog_detail.html'
     context_object_name = 'post'
-    
-    def get_queryset(self):
-        """비공개 글 접근 권한 검증"""
-        queryset = super().get_queryset()
-        if self.request.user.is_authenticated:
-            # 로그인한 경우: 공개 글 또는 본인이 작성한 글
-            return queryset.filter(
-                Q(visibility='public') | Q(author=self.request.user)
-            )
-        else:
-            # 비로그인 사용자: 공개 글만
-            return queryset.filter(visibility='public')
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
