@@ -1,0 +1,107 @@
+### OpenAI 직접 호출 (east-us)
+POST https://aif-taeyok.cognitiveservices.azure.com/openai/deployments/gpt-4.1/chat/completions?api-version=2024-05-01-preview
+Content-Type: application/json
+api-key : {{aif-taeyok-key}}
+
+{
+    "messages":
+    [
+        {
+            "role":"system",
+            "content":"You are a helpful assistant"
+        },
+        {
+            "role":"user",
+            "content":"과거에 1월 19일에는 무슨 일이 있었나요?"
+        }
+    ]
+}
+###
+
+### AI Gateway Test : https://ai-gateway-taeyo.azure-api.net/aif-taeyok
+POST https://ai-gateway-taeyo.azure-api.net/aif-taeyok/openai/deployments/gpt-4.1/chat/completions?api-version=2025-03-01-preview
+Content-Type: application/json
+api-key : {{ag-taeyok-key}}
+
+{
+    "messages":
+    [
+        {
+            "role":"system",
+            "content":"You are a helpful assistant"
+        },
+        {
+            "role":"user",
+            "content":"사슴하고 고라니의 차이는?"
+        }
+    ]
+}
+###
+
+### APIM 호출 (west-us)
+POST https://apim-service-taeyo.azure-api.net/ai-westus/openai/deployments/gpt-4.1/chat/completions?api-version=2025-03-01-preview
+Content-Type: application/json
+api-key : {{apim-api-key}}
+
+{
+    "messages":
+    [
+        {
+            "role":"system",
+            "content":"You are a helpful assistant"
+        },
+        {
+            "role":"user",
+            "content":"작년 1월 20일에는 무슨 일이 있었나요"
+        }
+    ]
+}
+###
+
+### APIM 호출 (east-us)
+POST https://apim-service-taeyo.azure-api.net/ai-eastus/openai/deployments/gpt-4.1/chat/completions?api-version=2025-03-01-preview
+Content-Type: application/json
+api-key : {{apim-api-key}}
+
+{
+    "messages":
+    [
+        {
+            "role":"system",
+            "content":"You are a helpful assistant"
+        },
+        {
+            "role":"user",
+            "content":"2026년 한국 공휴일은 언제인가요?"
+        }
+    ]
+}
+###
+
+### APIM 호출 (east-us)
+POST https://apim-service-taeyo.azure-api.net/ai-lb/openai/deployments/gpt-4.1/chat/completions?api-version=2025-03-01-preview HTTP/1.1
+Content-Type: application/json
+api-key : {{apim-api-key}}
+
+{
+    "messages":
+    [
+        {
+            "role":"system",
+            "content":"You are a helpful assistant"
+        },
+        {
+            "role":"user",
+            "content":"롱블랙과 아메리카노의 차이점은?"
+        }
+    ]
+}
+###
+
+### APIM 호출 (east-us)
+POST https://aif-taeyok.services.ai.azure.com/api/projects/proj-default/applications/CoffeeExpert/protocols/openai/responses?api-version=2025-11-15-preview HTTP/1.1
+Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsIng1dCI6IlBjWDk4R1g0MjBUMVg2c0JEa3poUW1xZ3dNVSIsImtpZCI6IlBjWDk4R1g0MjBUMVg2c0JEa3poUW1xZ3dNVSJ9.eyJhdWQiOiJodHRwczovL2FpLmF6dXJlLmNvbSIsImlzcyI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0LzE2YjNjMDEzLWQzMDAtNDY4ZC1hYzY0LTdlZGEwODIwYjZkMy8iLCJpYXQiOjE3Njk2NzQwMDksIm5iZiI6MTc2OTY3NDAwOSwiZXhwIjoxNzY5Njc5NjE1LCJhY3IiOiIxIiwiYWlvIjoiQWRRQUsvOGJBQUFBZUZ0VHhYaTdCYmpVSzFFTTJaT1BUbEpmSlF4c3RJUkkvZXpvQkNxdUloR2xOSmlNaGo4T0RocUpsOTUrME5GT0dHa081V1dYR1BlTmhESlF6VlpGZUhVMjhkTjZjYXp4RTBMcEpmeXJLS1cwRWtDWC9adU5UV254VVpQZzAzVC9Lclp3RmNuR2FaWlRlNVg4SndKUHQrTUg5NmtZWVIrK3hMengveFZMRyt0RkJORmU0OVIvSWtmMmE3UHlnMnVBQVNrU3NwdE1LdHM2a09kdkJKVjdiOVpCdkYxVXBoakJIQkFZRENjSE90RUtkbWNxL3BPYUgwMk9RUyticXR1VElERmlUZGIrSnRlR0lrN0plVGlrMGc9PSIsImFsdHNlY2lkIjoiNTo6MTAwMzAwMDA4NTMxN0EyRSIsImFtciI6WyJyc2EiLCJtZmEiXSwiYXBwaWQiOiIwNGIwNzc5NS04ZGRiLTQ2MWEtYmJlZS0wMmY5ZTFiZjdiNDYiLCJhcHBpZGFjciI6IjAiLCJkZXZpY2VpZCI6IjE4NmFjNGVkLTNhNTQtNDk1MS05ZTU2LTQxZWJhMTQ4ZmQ1YiIsImVtYWlsIjoidGFleW9rQG1pY3Jvc29mdC5jb20iLCJmYW1pbHlfbmFtZSI6IktpbSIsImdpdmVuX25hbWUiOiJUYWUgWW91bmciLCJncm91cHMiOlsiYjEzMDQwMjItMDhlNi00NDdkLWIwOTQtMTUzNzA1OTdjNmI2IiwiYWJlZmYzNmEtYzM4OS00MzI3LWE0NjEtY2IxNGQ0MTA3ZWFmIiwiZTMwOTZkZjctYjY1Yy00ZTMyLWFiMWEtN2EzNWRjNjg0ZjBhIiwiZDM0YzRlYmUtNDk4NC00OTAzLWE2NGQtOGMyMDI4M2Q1MTZiIiwiMDk1MzFhNzItMmMzZS00ZTA2LWJlMWUtMjU5NmJkMDhkY2RkIiwiYjQyNTQ4YWEtOWY0NS00YTM0LTgxYjAtZGIxYjFiNGEzNDc4IiwiZmVlM2I5MTMtNzA0Yy00ZTRjLWIzMTMtMmU5MDVmZDM2ZTRjIiwiNzQ1ZTA0NjUtZTNhZC00OTVmLThkNjUtNWU4ZGVjMzQzZGZhIiwiNDYyMzA5MGItNmIwOC00NjVkLTg3Y2ItNTRkMDdkZDYzOWVkIl0sImlkcCI6Imh0dHBzOi8vc3RzLndpbmRvd3MubmV0LzcyZjk4OGJmLTg2ZjEtNDFhZi05MWFiLTJkN2NkMDExZGI0Ny8iLCJpZHR5cCI6InVzZXIiLCJpcGFkZHIiOiIxMDQuMjE1LjI5LjEyNSIsIm5hbWUiOiJUYWUgWW91bmcgS2ltIiwib2lkIjoiZGZhMDY4YTktMzA0OS00ODUwLWI2OWUtMjI2ZjVmZGM3NzM0IiwicHVpZCI6IjEwMDMyMDAyMDJBN0Q4NEQiLCJwd2RfdXJsIjoiaHR0cHM6Ly9nby5taWNyb3NvZnQuY29tL2Z3bGluay8_bGlua2lkPTIyMjQxOTgiLCJyaCI6IjEuQVVZQUU4Q3pGZ0RUalVhc1pIN2FDQ0MyMDE5dnBoamYyeGRNbmRjV05IRXFuTDRhQUpaR0FBLiIsInNjcCI6InVzZXJfaW1wZXJzb25hdGlvbiIsInNpZCI6IjAwYjhkMDk5LTk5ZTktZGZhNC0xNWU4LTY2N2EzYmNhMmUwOSIsInN1YiI6IjU0LWczM3huS3FyVk4wR0NZWkJnNVdaSF9zdUtuVGdIQkhZb29vbmxhaVEiLCJ0aWQiOiIxNmIzYzAxMy1kMzAwLTQ2OGQtYWM2NC03ZWRhMDgyMGI2ZDMiLCJ1bmlxdWVfbmFtZSI6InRhZXlva0BtaWNyb3NvZnQuY29tIiwidXRpIjoieWUwUTFKT0YxVVdTV3locER1TkpBQSIsInZlciI6IjEuMCIsInhtc19hY3RfZmN0IjoiNSAzIiwieG1zX2Z0ZCI6IkNKNGFidzVMYm9EQkV0bW5iUWpnRXppcWw0aWFuQzRLZHlfS0lINU9HZkFCZFhOdWIzSjBhQzFrYzIxeiIsInhtc19pZHJlbCI6IjIgMSIsInhtc19zdWJfZmN0IjoiMyAxNCJ9.Fn7B1m-Qqie5ZPvqFQdHs7o87FYpzwmAJiRbSZYmMVvJ_uj6dsNX3PDOG9okUmLwQ0Tm-CP47Tex9IZLAfbV_fC5MeRr6djKzsGxab3L-gDNAP0rYiKMKI-aamiYnqOXB4BSqmDU9No9T12FfHjg2ZPNoF1jSZErw0-Pc_MvTM-RgviAv1hkA-_MuXibgrPGEJvSo2XBOQ6DY9v2mc7w4LTbb2jmdIStSs7vLp_re3wnR93dliiVlUxd03nYRCsyN4vQaU_J2jMa2gFaxc1BMchRryJFX40lo9E8X2IgQ1HfBKRg35nG0aUDW_plCOrPUF49vJhHNIB2eAO84YJIuA
+
+{"input":"Say hello"}
+###
