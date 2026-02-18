@@ -1,9 +1,4 @@
 {
-	"servers": {
-		"APIM-Microsoft-Learn": {
-			"url": "https://ag-taeyok.azure-api.net/learn/api/mcp",
-			"type": "http"
-		}
-	},
-	"inputs": []
+	"inputs": [],
+	"servers": {}
 }

@@ -1,6 +1,6 @@
 ---
 mode: 'agent'
-model: Claude Sonnet 3.7
+model: Claude Sonnet 4.5
 description: 'write Unit Test Code'
 ---
 다음 규칙에 따라 단위 테스트 코드를 작성해 주세요.
