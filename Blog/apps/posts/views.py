@@ -17,6 +17,17 @@ class PostListView(ListView):
     
     def get_queryset(self):
         queryset = super().get_queryset()
+        
+        # 비공개 글 필터링: 로그인한 사용자는 본인의 비공개 글 포함, 비로그인/다른 사용자는 공개 글만
+        if self.request.user.is_authenticated:
+            # 공개 글 또는 본인이 작성한 글만 표시
+            queryset = queryset.filter(
+                Q(visibility='public') | Q(author=self.request.user)
+            )
+        else:
+            # 비로그인 사용자는 공개 글만 표시
+            queryset = queryset.filter(visibility='public')
+        
         sort = self.request.GET.get('sort', 'date')
         
         # 정렬 기능
@@ -41,6 +52,14 @@ class PostDetailView(DetailView):
     
     def get_object(self):
         obj = super().get_object()
+        
+        # 비공개 글 접근 권한 체크
+        if obj.visibility == 'private':
+            # 비공개 글은 작성자만 접근 가능
+            if not self.request.user.is_authenticated or self.request.user != obj.author:
+                from django.core.exceptions import PermissionDenied
+                raise PermissionDenied("이 글에 접근할 권한이 없습니다.")
+        
         # 조회수 증가
         obj.views += 1
         obj.save()

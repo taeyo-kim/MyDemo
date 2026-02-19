@@ -129,7 +129,8 @@ class PostCreateViewTest(TestCase):
             reverse('posts:post_create'),
             {
                 'title': '새 글 제목',
-                'content': '새 글 내용'
+                'content': '새 글 내용',
+                'visibility': 'public'
             }
         )
         self.assertEqual(response.status_code, 302)  # 성공 후 리다이렉트
@@ -165,7 +166,8 @@ class PostUpdateViewTest(TestCase):
             reverse('posts:post_update', kwargs={'pk': self.post.pk}),
             {
                 'title': '수정된 제목',
-                'content': '수정된 내용'
+                'content': '수정된 내용',
+                'visibility': 'public'
             }
         )
         self.post.refresh_from_db()
@@ -203,4 +205,134 @@ class PostDeleteViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)  # 성공 후 리다이렉트
         self.assertEqual(Post.objects.count(), 0)
+
+
+class PostVisibilityTest(TestCase):
+    """Post 공개 범주 기능 테스트"""
+    
+    def setUp(self):
+        self.client = Client()
+        self.user1 = User.objects.create_user(
+            username='user1',
+            password='pass123'
+        )
+        self.user2 = User.objects.create_user(
+            username='user2',
+            password='pass123'
+        )
+        self.public_post = Post.objects.create(
+            title='공개 글',
+            content='공개 내용',
+            author=self.user1,
+            visibility='public'
+        )
+        self.private_post = Post.objects.create(
+            title='비공개 글',
+            content='비공개 내용',
+            author=self.user1,
+            visibility='private'
+        )
+    
+    def test_public_post_visible_to_all(self):
+        """공개 글은 모든 사용자에게 보임"""
+        # 비로그인 사용자
+        response = self.client.get(reverse('posts:post_list'))
+        self.assertContains(response, '공개 글')
+        self.assertNotContains(response, '비공개 글')
+        
+        # 다른 사용자
+        self.client.login(username='user2', password='pass123')
+        response = self.client.get(reverse('posts:post_list'))
+        self.assertContains(response, '공개 글')
+        self.assertNotContains(response, '비공개 글')
+    
+    def test_private_post_visible_to_author_only(self):
+        """비공개 글은 작성자에게만 보임"""
+        # 작성자로 로그인
+        self.client.login(username='user1', password='pass123')
+        response = self.client.get(reverse('posts:post_list'))
+        self.assertContains(response, '공개 글')
+        self.assertContains(response, '비공개 글')
+    
+    def test_private_post_detail_access_denied_for_others(self):
+        """비공개 글 상세 페이지는 작성자만 접근 가능"""
+        # 비로그인 사용자
+        response = self.client.get(
+            reverse('posts:post_detail', kwargs={'pk': self.private_post.pk})
+        )
+        self.assertEqual(response.status_code, 403)
+        
+        # 다른 사용자
+        self.client.login(username='user2', password='pass123')
+        response = self.client.get(
+            reverse('posts:post_detail', kwargs={'pk': self.private_post.pk})
+        )
+        self.assertEqual(response.status_code, 403)
+    
+    def test_private_post_detail_access_allowed_for_author(self):
+        """비공개 글 상세 페이지는 작성자가 접근 가능"""
+        self.client.login(username='user1', password='pass123')
+        response = self.client.get(
+            reverse('posts:post_detail', kwargs={'pk': self.private_post.pk})
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '비공개 글')
+    
+    def test_public_post_detail_access_allowed_for_all(self):
+        """공개 글 상세 페이지는 모든 사용자가 접근 가능"""
+        # 비로그인 사용자
+        response = self.client.get(
+            reverse('posts:post_detail', kwargs={'pk': self.public_post.pk})
+        )
+        self.assertEqual(response.status_code, 200)
+        
+        # 다른 사용자
+        self.client.login(username='user2', password='pass123')
+        response = self.client.get(
+            reverse('posts:post_detail', kwargs={'pk': self.public_post.pk})
+        )
+        self.assertEqual(response.status_code, 200)
+    
+    def test_post_creation_with_visibility(self):
+        """공개 범주를 지정하여 글 작성 테스트"""
+        self.client.login(username='user1', password='pass123')
+        response = self.client.post(
+            reverse('posts:post_create'),
+            {
+                'title': '새 비공개 글',
+                'content': '새 비공개 내용',
+                'visibility': 'private'
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        post = Post.objects.get(title='새 비공개 글')
+        self.assertEqual(post.visibility, 'private')
+    
+    def test_post_default_visibility_is_public(self):
+        """기본 공개 범주는 'public'"""
+        self.client.login(username='user1', password='pass123')
+        # visibility를 명시하지 않으면 폼이 유효하지 않으므로, 기본값 'public'을 전달
+        response = self.client.post(
+            reverse('posts:post_create'),
+            {
+                'title': '기본 공개 글',
+                'content': '기본 내용',
+                'visibility': 'public'
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        post = Post.objects.get(title='기본 공개 글')
+        self.assertEqual(post.visibility, 'public')
+    
+    def test_private_post_badge_shown_to_author(self):
+        """비공개 글 뱃지가 작성자에게 표시됨"""
+        self.client.login(username='user1', password='pass123')
+        response = self.client.get(reverse('posts:post_list'))
+        self.assertContains(response, '비공개')
+        
+        response = self.client.get(
+            reverse('posts:post_detail', kwargs={'pk': self.private_post.pk})
+        )
+        self.assertContains(response, '비공개')
+
 
