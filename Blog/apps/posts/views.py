@@ -1,10 +1,10 @@
-from django.shortcuts import render
-from django.urls import reverse_lazy
+from django.shortcuts import render, get_object_or_404
+from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db.models import Q
-from .models import Post
-from .forms import PostForm
+from .models import Post, Comment
+from .forms import PostForm, CommentForm
 
 # Create your views here.
 
@@ -45,6 +45,12 @@ class PostDetailView(DetailView):
         obj.views += 1
         obj.save()
         return obj
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['comment_form'] = CommentForm()
+        context['comments'] = self.object.comments.select_related('author').all()
+        return context
 
 
 class PostCreateView(LoginRequiredMixin, CreateView):
@@ -91,4 +97,45 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         # 작성자만 삭제 가능
         post = self.get_object()
         return self.request.user == post.author
+
+
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    """댓글 작성 뷰"""
+    model = Comment
+    form_class = CommentForm
+
+    def form_valid(self, form):
+        form.instance.author = self.request.user
+        form.instance.post = get_object_or_404(Post, pk=self.kwargs['post_pk'])
+        return super().form_valid(form)
+
+    def get_success_url(self) -> str:
+        return reverse('posts:post_detail', kwargs={'pk': self.kwargs['post_pk']})
+
+
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    """댓글 수정 뷰"""
+    model = Comment
+    form_class = CommentForm
+    template_name = 'posts/comment_form.html'
+
+    def test_func(self) -> bool:
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self) -> str:
+        return reverse('posts:post_detail', kwargs={'pk': self.object.post.pk})
+
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    """댓글 삭제 뷰"""
+    model = Comment
+    template_name = 'posts/comment_confirm_delete.html'
+
+    def test_func(self) -> bool:
+        comment = self.get_object()
+        return self.request.user == comment.author
+
+    def get_success_url(self) -> str:
+        return reverse('posts:post_detail', kwargs={'pk': self.object.post.pk})
 

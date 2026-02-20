@@ -1,7 +1,7 @@
 from django.test import TestCase, Client
 from django.contrib.auth.models import User
 from django.urls import reverse
-from .models import Post
+from .models import Post, Comment
 
 
 class PostModelTest(TestCase):
@@ -39,6 +39,37 @@ class PostModelTest(TestCase):
         posts = Post.objects.all()
         self.assertEqual(posts[0], post2)  # 최신 글이 먼저
         self.assertEqual(posts[1], self.post)
+
+
+class CommentModelTest(TestCase):
+    """Comment 모델 테스트"""
+
+    def setUp(self):
+        # arrange
+        self.user = User.objects.create_user(username='commenter', password='pass123')
+        self.post = Post.objects.create(title='글', content='내용', author=self.user)
+        self.comment = Comment.objects.create(
+            post=self.post,
+            author=self.user,
+            content='테스트 댓글입니다.'
+        )
+
+    def test_comment_creation(self):
+        """댓글 생성 테스트"""
+        # assert
+        self.assertEqual(self.comment.post, self.post)
+        self.assertEqual(self.comment.author, self.user)
+        self.assertEqual(self.comment.content, '테스트 댓글입니다.')
+
+    def test_comment_str(self):
+        """__str__ 메서드 테스트"""
+        # assert
+        self.assertIn('commenter', str(self.comment))
+
+    def test_comment_related_name(self):
+        """related_name 'comments' 동작 테스트"""
+        # assert
+        self.assertEqual(self.post.comments.count(), 1)
 
 
 class PostListViewTest(TestCase):
@@ -104,6 +135,18 @@ class PostDetailViewTest(TestCase):
         self.client.get(reverse('posts:post_detail', kwargs={'pk': self.post.pk}))
         self.post.refresh_from_db()
         self.assertEqual(self.post.views, initial_views + 1)
+
+    def test_post_detail_contains_comment_form(self):
+        """상세 페이지에 댓글 폼 포함 여부 테스트 (로그인)"""
+        # arrange
+        self.client.login(username='testuser', password='testpass123')
+        # act
+        response = self.client.get(
+            reverse('posts:post_detail', kwargs={'pk': self.post.pk})
+        )
+        # assert
+        self.assertIn('comment_form', response.context)
+        self.assertIn('comments', response.context)
 
 
 class PostCreateViewTest(TestCase):
@@ -203,4 +246,120 @@ class PostDeleteViewTest(TestCase):
         )
         self.assertEqual(response.status_code, 302)  # 성공 후 리다이렉트
         self.assertEqual(Post.objects.count(), 0)
+
+
+class CommentCreateViewTest(TestCase):
+    """CommentCreateView 테스트"""
+
+    def setUp(self):
+        # arrange
+        self.client = Client()
+        self.author = User.objects.create_user(username='author', password='pass123')
+        self.other = User.objects.create_user(username='other', password='pass123')
+        self.post = Post.objects.create(title='글', content='내용', author=self.author)
+
+    def test_comment_create_requires_login(self):
+        """비로그인 사용자의 댓글 작성 시도 테스트"""
+        # act
+        response = self.client.post(
+            reverse('posts:comment_create', kwargs={'post_pk': self.post.pk}),
+            {'content': '댓글 내용'}
+        )
+        # assert
+        self.assertEqual(response.status_code, 302)
+        self.assertIn('/users/login/', response.url)
+
+    def test_comment_create_with_login(self):
+        """로그인한 사용자의 댓글 작성 테스트"""
+        # arrange
+        self.client.login(username='other', password='pass123')
+        # act
+        response = self.client.post(
+            reverse('posts:comment_create', kwargs={'post_pk': self.post.pk}),
+            {'content': '새 댓글입니다.'}
+        )
+        # assert
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Comment.objects.count(), 1)
+        comment = Comment.objects.first()
+        self.assertEqual(comment.content, '새 댓글입니다.')
+        self.assertEqual(comment.author, self.other)
+        self.assertEqual(comment.post, self.post)
+
+
+class CommentUpdateViewTest(TestCase):
+    """CommentUpdateView 테스트"""
+
+    def setUp(self):
+        # arrange
+        self.client = Client()
+        self.author = User.objects.create_user(username='author', password='pass123')
+        self.other = User.objects.create_user(username='other', password='pass123')
+        self.post = Post.objects.create(title='글', content='내용', author=self.author)
+        self.comment = Comment.objects.create(
+            post=self.post, author=self.author, content='원본 댓글'
+        )
+
+    def test_comment_update_by_author(self):
+        """작성자의 댓글 수정 테스트"""
+        # arrange
+        self.client.login(username='author', password='pass123')
+        # act
+        response = self.client.post(
+            reverse('posts:comment_update', kwargs={'pk': self.comment.pk}),
+            {'content': '수정된 댓글'}
+        )
+        # assert
+        self.comment.refresh_from_db()
+        self.assertEqual(self.comment.content, '수정된 댓글')
+
+    def test_comment_update_by_non_author(self):
+        """작성자가 아닌 사용자의 댓글 수정 시도 테스트"""
+        # arrange
+        self.client.login(username='other', password='pass123')
+        # act
+        response = self.client.get(
+            reverse('posts:comment_update', kwargs={'pk': self.comment.pk})
+        )
+        # assert
+        self.assertEqual(response.status_code, 403)
+
+
+class CommentDeleteViewTest(TestCase):
+    """CommentDeleteView 테스트"""
+
+    def setUp(self):
+        # arrange
+        self.client = Client()
+        self.author = User.objects.create_user(username='author', password='pass123')
+        self.other = User.objects.create_user(username='other', password='pass123')
+        self.post = Post.objects.create(title='글', content='내용', author=self.author)
+        self.comment = Comment.objects.create(
+            post=self.post, author=self.author, content='삭제할 댓글'
+        )
+
+    def test_comment_delete_by_author(self):
+        """작성자의 댓글 삭제 테스트"""
+        # arrange
+        self.client.login(username='author', password='pass123')
+        # act
+        response = self.client.post(
+            reverse('posts:comment_delete', kwargs={'pk': self.comment.pk})
+        )
+        # assert
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(Comment.objects.count(), 0)
+
+    def test_comment_delete_by_non_author(self):
+        """작성자가 아닌 사용자의 댓글 삭제 시도 테스트"""
+        # arrange
+        self.client.login(username='other', password='pass123')
+        # act
+        response = self.client.post(
+            reverse('posts:comment_delete', kwargs={'pk': self.comment.pk})
+        )
+        # assert
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Comment.objects.count(), 1)
+
 
